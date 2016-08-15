@@ -1,0 +1,113 @@
+# Configure the template filesystem
+# =================================
+#
+# Spontaneous accepts any Moneta[1] compatible key-value store as a
+# template destination. The arguments to #output_store should be
+# identical to those you would use to configure a Moneta instance,
+# e.g.
+#
+#     Site.output_store(:Memcached, server: 'localhost:11211)
+#
+# [1]: https://github.com/minad/moneta
+
+Site.output_store(:File, dir: Site.revision_root)
+
+# Publishing to S3
+# ----------------
+#
+# If you would like to serve a static site directly from S3 then follow the
+# instructions here to create and configure a suitable S3 bucket[1][2] and then
+# configure Spontaneous to publish directly to it:
+#
+#   Site.output_store :Fog, {
+#     bucket: 'bucket.name.com',
+#     # this is a standard Fog connection hash
+#     connection: {
+#       provider: "AWS",
+#       aws_secret_access_key: ENV["S3_SECRET_ACCESS_KEY"],
+#       aws_access_key_id: ENV["S3_ACCESS_KEY_ID"]
+#     }
+#   }
+#
+# [1]: http://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html
+# [2]: http://docs.aws.amazon.com/AmazonS3/latest/dev/HowDoIWebsiteConfiguration.html
+
+
+
+# Configure the site publishing pipeline
+# ======================================
+#
+# `run` inserts a step in the publishing pipeline.
+
+# The core steps can be referenced by a symbol that is mapped to
+# the corresponding step class.
+#
+# Custom steps *must* respond to `call` with one parameter `transaction`.
+# The passed transaction object has five useful methods:
+#
+#   site:     the current site instance
+#   revision: the revision that is being created
+#   user:     the user that launched the current publish
+#   pages:    the list of pages that are being published
+#   progress: a publishing progress object
+#
+# `call` can optionally return an object that responds to #rollback
+# which should undo any actions made by the #call method.
+#
+# They can also, optionally, respond to:
+#
+# #count(transaction): returns the number of
+#     discrete actions that this step comprises. During the #call
+#     the step *must* call progress#step exactly the number of times
+#     returned by this call
+#
+# Examples:
+#
+# Run a proc as part of the publishing process:
+#     run proc { |transaction| puts "Publishing revision #{transaction.revision}" }
+#
+# Run a custom publishing step:
+#
+#     class NotifyMe
+#       def initialize(options)
+#         @options = options
+#       end
+#       def count(transaction)
+#         1
+#       end
+#       def call(transaction)
+#         # Send me a tweet when the site publishes...
+#         #
+#         # Don't forget to call transaction.step(1) to ensure that
+#         # progress is updated with the same number of steps as returned
+#         # from #count above.
+#       end
+#     end
+#
+#     Site.publish do
+#       run NotifyMe.new(handle: "my_twitter_name")
+#     end
+#
+
+# NOTE: Do not remove or re-order the core steps declared below
+# unless you are really sure of what you're doing
+
+Site.publish do
+  # List of notification targets.
+  # If you remove the :browser target then publishing progress will not
+  # be shown in the browser
+  notify :browser
+  notify :stdout
+  # Start core steps
+  run :create_revision_directory
+  run :render_revision
+  run :generate_search_indexes
+  run :copy_assets
+  run :copy_static_files
+  run :generate_rackup_file
+  run :activate_revision
+  run :archive_old_revisions
+  # Finish core steps
+  # At this point the site is published & most probably live to the public
+  # This is a good place to run any notification steps
+end

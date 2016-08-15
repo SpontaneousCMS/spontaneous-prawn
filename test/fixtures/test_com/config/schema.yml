@@ -1,0 +1,9 @@
+---
+g7rjxvri001: type//Box
+g7rjxvri002: type//Page
+g7rjxvri003: field/g7rjxvri002/title
+g7rjxvri004: type//Piece
+h7rjxvri005: type//ErrorsPage
+h7rjxvri006: box/h7rjxvri005/errors
+h7rjxvri007: type//ErrorPage
+h7rjxvri008: field/h7rjxvri007/code
