@@ -7,3 +7,6 @@
 /pkg/
 /spec/reports/
 /tmp/
+test_render_page.pdf
+db
+.ruby-version

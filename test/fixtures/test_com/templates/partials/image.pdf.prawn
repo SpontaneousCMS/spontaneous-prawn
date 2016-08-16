@@ -1,2 +1,2 @@
 
-pdf.image image
+pdf.image image.inline

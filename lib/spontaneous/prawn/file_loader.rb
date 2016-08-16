@@ -5,18 +5,17 @@ module Spontaneous
 
       attr_reader :format
 
-      def initialize(roots, format)
+      def initialize(roots, format, pdf_config)
         @roots = roots
         @format = format
+        @pdf_config = pdf_config
       end
 
       def template(template)
-        p [:FileLoader, :template, template, format]
-        P::Template.new(open_template(template), self)
+        P::Template.new(open_template(template), self, @pdf_config)
       end
 
       def open_template(template)
-        p [:open_template, template, format]
         template_path = resolve(template)
         raise UnknownTemplateError.new(@roots, filename(template)) if template_path.nil?
         # TODO: Make the encoding configurable?
@@ -31,7 +30,6 @@ module Spontaneous
       end
 
       def filename(template_name)
-        p [:filename, template_name, format]
         [template_name, format, P::EXTENSION].join(P::DOT)
       end
 
@@ -42,7 +40,6 @@ module Spontaneous
       end
 
       def paths(filename)
-        p [:paths, @roots, filename]
         @roots.map { |root| ::File.join(root, filename) }
       end
 

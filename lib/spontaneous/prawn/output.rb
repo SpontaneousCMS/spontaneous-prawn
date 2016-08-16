@@ -6,8 +6,19 @@ module Spontaneous
       provides_format :pdf, :pdf_prawn
 
       def default_renderer
-        opts = options[:config] || {}
-        Spontaneous::Prawn::Renderer.new(Spontaneous.instance, opts)
+        prawn_renderer(Spontaneous.instance)
+      end
+
+      def publish_renderer(transaction)
+        prawn_renderer(transaction.site)
+      end
+
+      def pdf_options
+        options[:config] || {}
+      end
+
+      def prawn_renderer(site)
+        Spontaneous::Prawn::Renderer.new(site, pdf_options)
       end
     end
   end

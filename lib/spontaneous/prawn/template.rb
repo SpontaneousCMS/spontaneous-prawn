@@ -1,45 +1,25 @@
 module Spontaneous
   module Prawn
     class Template
-      def initialize(source_reader, loader)
+      def initialize(source_reader, loader, pdf_config)
         @source = source_reader
         @loader = loader
+        @pdf_config = pdf_config
       end
 
-      def render(context)
-        context.__loader = @loader
+      def render(context, doc = nil)
         doc = document(context)
-        template_proc(context).call(doc)
-        doc.__document.render_file "page.pdf"
+        render_to_document(doc, context)
         doc.__document.render
       end
 
-      def document(context)
-        # p [: PASS_OPTIONS!]
-        Document.new(context, {})
+      def render_to_document(document, context)
+        context.__loader = @loader
+        template_proc(context).call(document)
       end
 
-      class Document < BasicObject
-        attr_reader :__document
-
-        def initialize(context, options)
-          @__context = context
-          @__document = ::Prawn::Document.new(options)
-        end
-
-        def respond_to_missing?(method_name, include_private = false)
-          __document.respond_to?(method_name, include_private)
-        end
-
-        def method_missing(method_name, *args)
-          document_args = args.map { |arg| @__context.__decode_params(arg) }
-          # $stdout.puts [:missing, method_name,args, document_args].inspect
-          if ::Kernel.block_given?
-            __document.send(method_name, *document_args, &Proc.new)
-          else
-            __document.send(method_name, *document_args)
-          end
-        end
+      def document(context)
+        Spontaneous::Prawn::Document.new(context, @pdf_config)
       end
 
       def template_proc(context)

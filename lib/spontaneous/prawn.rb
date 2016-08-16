@@ -1,4 +1,5 @@
 require 'spontaneous'
+require 'prawn/measurement_extensions'
 
 module Spontaneous
   module Prawn
@@ -20,4 +21,6 @@ require 'spontaneous/prawn/renderer'
 require 'spontaneous/prawn/engine'
 require 'spontaneous/prawn/file_loader'
 require 'spontaneous/prawn/template'
+require 'spontaneous/prawn/document'
+require 'spontaneous/prawn/image/renderable'
 

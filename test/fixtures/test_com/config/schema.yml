@@ -7,3 +7,8 @@ h7rjxvri005: type//ErrorsPage
 h7rjxvri006: box/h7rjxvri005/errors
 h7rjxvri007: type//ErrorPage
 h7rjxvri008: field/h7rjxvri007/code
+si7a4wri001: field/g7rjxvri002/image
+080maxri001: box/g7rjxvri002/images
+180maxri002: type//Image
+180maxri003: field/180maxri002/image
+180maxri004: field/180maxri002/title
