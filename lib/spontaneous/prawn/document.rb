@@ -22,8 +22,8 @@ module Spontaneous
       end
 
       def method_missing(method_name, *args)
-        document_args = args.map { |arg| p arg; @__context.__decode_params(arg) }
-        $stdout.puts [:missing, method_name,args, document_args].inspect
+        document_args = args.map { |arg| @__context.__decode_params(arg) }
+        # $stdout.puts [:missing, method_name,args, document_args].inspect
         if ::Kernel.block_given?
           __document.send(method_name, *document_args, &Proc.new)
         else
