@@ -5,6 +5,14 @@ module Spontaneous
     class Output < ::Spontaneous::Output::Format
       provides_format :pdf, :pdf_prawn
 
+      module ClassMethods
+        def default_renderer(site)
+          Spontaneous::Prawn::Renderer.new(site, {})
+        end
+      end
+
+      extend ClassMethods
+
       def default_renderer
         prawn_renderer(Spontaneous.instance)
       end
