@@ -9,6 +9,10 @@ module Spontaneous
         def default_renderer(site)
           Spontaneous::Prawn::Renderer.new(site, {})
         end
+
+        def preview_renderer(site)
+          Spontaneous::Prawn::Renderer.new(site, {})
+        end
       end
 
       extend ClassMethods
