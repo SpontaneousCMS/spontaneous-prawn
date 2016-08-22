@@ -1,9 +1,8 @@
 module Spontaneous
   module Prawn
     class Engine
-      def initialize(roots, pdf_config)
+      def initialize(roots)
         @roots = roots
-        @pdf_config = pdf_config
       end
 
       def render(template, context, format)
@@ -24,7 +23,7 @@ module Spontaneous
 
       def loaders
         @loaders ||= Hash.new { |h, k|
-          h[k] = Spontaneous::Prawn::FileLoader.new(@roots, k, @pdf_config)
+          h[k] = Spontaneous::Prawn::FileLoader.new(@roots, k)
         }
       end
     end

@@ -5,14 +5,13 @@ module Spontaneous
 
       attr_reader :format
 
-      def initialize(roots, format, pdf_config)
+      def initialize(roots, format)
         @roots = roots
         @format = format
-        @pdf_config = pdf_config
       end
 
       def template(template)
-        P::Template.new(open_template(template), self, @pdf_config)
+        P::Template.new(open_template(template), self)
       end
 
       def open_template(template)

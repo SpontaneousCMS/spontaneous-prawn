@@ -3,12 +3,11 @@ require 'prawn'
 module Spontaneous
   module Prawn
     class Renderer < Spontaneous::Output::Template::Renderer
-      attr_reader :site, :config, :engine
+      attr_reader :site, :engine
 
-      def initialize(site, config)
+      def initialize(site)
         @site = site
-        @config = config
-        @engine = Spontaneous::Prawn::Engine.new(site.paths(:templates), @config)
+        @engine = Spontaneous::Prawn::Engine.new(site.paths(:templates))
       end
 
       def _render(content, context, format)
@@ -32,7 +31,7 @@ module Spontaneous
       end
 
       def for_document(document)
-        DocumentRenderer.new(@site, @config, document)
+        DocumentRenderer.new(@site, document)
       end
 
       # TODO: dynamic pdfs?
@@ -44,8 +43,8 @@ module Spontaneous
     # Provides a renderer that writes into an existing document, used when
     # writing pieces etc into a document
     class DocumentRenderer < Renderer
-      def initialize(site, config, document)
-        super(site, config)
+      def initialize(site, document)
+        super(site)
         @document = document
       end
 

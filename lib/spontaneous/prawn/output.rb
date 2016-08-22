@@ -7,30 +7,26 @@ module Spontaneous
 
       module ClassMethods
         def default_renderer(site)
-          Spontaneous::Prawn::Renderer.new(site, {})
+          Spontaneous::Prawn::Renderer.new(site)
         end
 
         def preview_renderer(site)
-          Spontaneous::Prawn::Renderer.new(site, {})
+          Spontaneous::Prawn::Renderer.new(site)
         end
       end
 
       extend ClassMethods
 
-      def default_renderer
-        prawn_renderer(Spontaneous.instance)
+      def default_renderer(site = Spontaneous.instance)
+        prawn_renderer(site)
       end
 
       def publish_renderer(transaction)
         prawn_renderer(transaction.site)
       end
 
-      def pdf_options
-        options[:config] || {}
-      end
-
       def prawn_renderer(site)
-        Spontaneous::Prawn::Renderer.new(site, pdf_options)
+        Spontaneous::Prawn::Renderer.new(site)
       end
     end
   end

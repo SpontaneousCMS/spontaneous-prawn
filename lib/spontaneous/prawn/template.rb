@@ -1,10 +1,9 @@
 module Spontaneous
   module Prawn
     class Template
-      def initialize(source_reader, loader, pdf_config)
+      def initialize(source_reader, loader)
         @source = source_reader
         @loader = loader
-        @pdf_config = pdf_config
       end
 
       def render(context, doc = nil)
@@ -18,8 +17,12 @@ module Spontaneous
         template_proc(context).call(document)
       end
 
+      def pdf_options(context)
+        context.__output.options[:config] || {}
+      end
+
       def document(context)
-        Spontaneous::Prawn::Document.new(context, @pdf_config)
+        Spontaneous::Prawn::Document.new(context, pdf_options(context))
       end
 
       def template_proc(context)
