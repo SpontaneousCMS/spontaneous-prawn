@@ -1,4 +1,5 @@
 require 'spontaneous/prawn/renderer'
+require 'spontaneous/prawn/context'
 
 module Spontaneous
   module Prawn
@@ -27,6 +28,15 @@ module Spontaneous
 
       def prawn_renderer(site)
         Spontaneous::Prawn::Renderer.new(site)
+      end
+
+      def context(site)
+        helpers = super
+        extension = Module.new do
+          include helpers
+          include Spontaneous::Prawn::Context
+        end
+        extension
       end
     end
   end
